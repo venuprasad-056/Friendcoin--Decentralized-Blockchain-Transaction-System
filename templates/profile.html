@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Profile - FriendCoin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+  <div class="container mx-auto p-8">
+    <a href="/dashboard" class="text-slate-300">← Back to Dashboard</a>
+    <div class="bg-slate-800 p-6 rounded-lg mt-4">
+      <h2 class="text-2xl font-semibold text-yellow-400">Profile</h2>
+      <p class="mt-3"><strong>Username:</strong> {{ username }}</p>
+      <p class="mt-2"><strong>Wallet:</strong> <span class="font-mono">{{ wallet }}</span></p>
+      <p class="mt-2"><strong>Balance:</strong> <span class="text-green-400">{{ balance }} FC</span></p>
+
+      <div class="mt-4">
+        <button id="revealKeyBtn" class="bg-yellow-500 text-black py-1 px-3 rounded">Show Private Key</button>
+        <div id="privateKeyDiv" class="mt-2 font-mono text-red-400 hidden"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.getElementById("revealKeyBtn").addEventListener("click", function(){
+    const password = prompt("Enter your login password:");
+    fetch("/get_private_key", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({password: password})
+    }).then(res => res.json()).then(data => {
+        if(data.success){
+            document.getElementById("privateKeyDiv").innerText = data.private_key;
+            document.getElementById("privateKeyDiv").classList.remove("hidden");
+        } else {
+            alert("Incorrect password!");
+        }
+    });
+});
+</script>
+</body>
+</html>
